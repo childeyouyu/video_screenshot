@@ -1,3 +1,5 @@
 .idea/*.xml
 .idea/.gitignore
 .idea/screenshot-extension.iml
+.idea/*.iml
+.idea/*.name

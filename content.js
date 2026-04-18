@@ -278,6 +278,10 @@
     function findAndProcessStandardVideos() {
         const videos = document.querySelectorAll('video');
         videos.forEach(video => {
+            // 跳过西瓜播放器和YouTube中的视频，避免重复 | Skip videos in Xigua/YouTube players to avoid duplicates
+            if (video.closest('.xgplayer, [class*="xgplayer"], .xg-player, .html5-video-player')) {
+                return;
+            }
             // 检查视频是否已加载数据 | Check if video has loaded data
             if (video.readyState >= 2) {
                 if (!PROCESSED_PLAYERS.has(video)) {
