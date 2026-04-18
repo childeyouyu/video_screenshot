@@ -4,7 +4,7 @@
 
 Video Screenshot Tool is a Chrome browser extension that displays a screenshot button on web video players, helping users quickly capture video frames.
 
-[English](https://github.com/childeyouyu/video_screenshot/blob/main/README.md) | [中文](https://github.com/childeyouyu/video_screenshot/blob/main/README_CN.md.md)
+[English](https://github.com/childeyouyu/video_screenshot/blob/main/README.md) | [中文](https://github.com/childeyouyu/video_screenshot/blob/main/README_CN.md)
 
 ### Features
 
@@ -40,7 +40,7 @@ Click "中文" or "English" button in the popup to switch language. The language
 
 ### Development
 
-For二次开发, please refer to the following file structure:
+For development, please refer to the following file structure:
 
 ```
 screenshot-extension/
@@ -62,6 +62,6 @@ screenshot-extension/
 
 ---
 
-## 版本 / Version
+## Version
 
-当前版本 / Current Version: 1.0
+Current Version: 1.0
