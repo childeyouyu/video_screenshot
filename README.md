@@ -23,10 +23,11 @@ Video Screenshot Tool is a Chrome browser extension that displays a screenshot b
 
 ### Installation
 
-1. Open Chrome browser, go to Extensions page: `chrome://extensions/`
-2. Enable "Developer mode" in the top right corner
-3. Click "Load unpacked"
-4. Select the extension folder
+1. Download the extension files
+2. Open Chrome browser, go to Extensions page: `chrome://extensions/`
+3. Enable "Developer mode" in the top right corner
+4. Click "Load unpacked"
+5. Select the extension folder
 
 ### How to Use
 
@@ -36,7 +37,7 @@ Video Screenshot Tool is a Chrome browser extension that displays a screenshot b
 
 ### Language Switch
 
-检测浏览器语言，自动切换语言。
+Check the language and switch between English and Chinese in the page.
 
 ### Development
 
