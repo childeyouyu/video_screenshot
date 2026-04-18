@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <mask id="apertureMask">
+      <rect x="0" y="0" width="200" height="200" fill="black" />
+      
+      <circle cx="100" cy="100" r="68" fill="white" />
+      
+      <g transform="translate(100, 100) rotate(30)">
+        
+        <polygon points="24,0 12,20.784 -12,20.784 -24,0 -12,-20.784 12,-20.784" fill="black" />
+        
+        <polygon id="gap" points="25,1.732 -16,-69.28 -10.804,-72.28 30.196,-1.268" fill="black" />
+        
+        <use href="#gap" transform="rotate(60)" />
+        <use href="#gap" transform="rotate(120)" />
+        <use href="#gap" transform="rotate(180)" />
+        <use href="#gap" transform="rotate(240)" />
+        <use href="#gap" transform="rotate(300)" />
+      </g>
+    </mask>
+  </defs>
+  
+  <rect x="10" y="10" width="180" height="180" rx="40" fill="none" stroke="#FFFFFF" stroke-width="10" />
+  
+  <rect x="0" y="0" width="200" height="200" fill="#FFFFFF" mask="url(#apertureMask)" />
+</svg>

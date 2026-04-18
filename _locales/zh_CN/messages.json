@@ -78,5 +78,29 @@
     "screenshot": {
         "message": "截图",
         "description": "截图"
+    },
+    "enable_screenshot": {
+        "message": "启用截图功能",
+        "description": "启用截图功能开关"
+    },
+    "feature_enabled": {
+        "message": "功能已启用",
+        "description": "功能启用状态"
+    },
+    "feature_disabled": {
+        "message": "功能已禁用",
+        "description": "功能禁用状态"
+    },
+    "select_icon_style": {
+        "message": "选择图标样式",
+        "description": "选择图标样式标题"
+    },
+    "icon_pattern_1": {
+        "message": "图案一",
+        "description": "第一个图标图案"
+    },
+    "icon_pattern_2": {
+        "message": "图案二",
+        "description": "第二个图标图案"
     }
 }

@@ -5,42 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Screenshot Tool</title>
     <style>
+        /* 全局样式重置 | Global style reset */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
+        /* 主体容器样式 | Body container styles */
         body {
             width: 300px;
             padding: 20px;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
             background: #f5f5f5;
         }
-        
+
+        /* 头部区域样式 | Header section styles */
         .header {
             text-align: center;
             margin-bottom: 20px;
         }
-        
+
         .header h1 {
             font-size: 18px;
             color: #333;
             margin-bottom: 8px;
         }
-        
+
         .header p {
             font-size: 12px;
             color: #666;
         }
-        
+
+        /* 功能列表容器 | Feature list container */
         .feature-list {
             background: white;
             border-radius: 8px;
             padding: 15px;
             margin-bottom: 15px;
         }
-        
+
+        /* 单个功能项 | Single feature item */
         .feature-item {
             display: flex;
             align-items: center;
@@ -48,11 +53,12 @@
             padding: 10px 0;
             border-bottom: 1px solid #eee;
         }
-        
+
         .feature-item:last-child {
             border-bottom: none;
         }
-        
+
+        /* 功能图标容器 | Feature icon container */
         .feature-icon {
             width: 32px;
             height: 32px;
@@ -62,46 +68,49 @@
             align-items: center;
             justify-content: center;
         }
-        
+
         .feature-icon svg {
             width: 18px;
             height: 18px;
             fill: white;
         }
-        
+
+        /* 功能文本样式 | Feature text styles */
         .feature-text h3 {
             font-size: 14px;
             color: #333;
             margin-bottom: 2px;
         }
-        
+
         .feature-text p {
             font-size: 12px;
             color: #999;
         }
-        
+
+        /* 使用说明区域 | Usage instructions section */
         .usage {
             background: white;
             border-radius: 8px;
             padding: 15px;
         }
-        
+
         .usage h2 {
             font-size: 14px;
             color: #333;
             margin-bottom: 12px;
         }
-        
+
         .usage ol {
             padding-left: 20px;
         }
-        
+
         .usage li {
             font-size: 12px;
             color: #666;
             line-height: 1.8;
         }
-        
+
+        /* 捐赠区域样式 | Donate section styles */
         .donate {
             background: white;
             border-radius: 8px;
@@ -109,18 +118,159 @@
             text-align: center;
             margin-top: 15px;
         }
-        
+
         .donate p {
             font-size: 12px;
             color: #666;
             margin-bottom: 10px;
         }
-        
+
         .donate img {
             max-width: 100%;
             border-radius: 4px;
         }
-        
+
+        /* 开关容器样式 | Toggle container styles */
+        .toggle-container {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* 开关标签文本 | Toggle label text */
+        .toggle-label {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* 开关注册容器 | Toggle switch container */
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* 滑块背景 | Slider background */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .3s;
+            border-radius: 26px;
+        }
+
+        /* 滑块圆点 | Slider circle */
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        /* 选中状态的滑块背景 | Checked state slider background */
+        input:checked + .slider {
+            background-color: #ff6600;
+        }
+
+        /* 选中状态的滑块圆点位置 | Checked state slider circle position */
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        /* 图标选择器容器 | Icon selector container */
+        .icon-selector {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .icon-selector h2 {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        /* 图标选项布局 | Icon options layout */
+        .icon-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* 单个图标选项 | Single icon option */
+        .icon-option {
+            position: relative;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            background: #0e0e0e;
+        }
+
+        /* 悬停效果 | Hover effect */
+        .icon-option:hover {
+            border-color: #ff6600;
+            background: #ff7722;
+        }
+
+        /* 选中状态样式 | Selected state styles */
+        .icon-option.selected {
+            border-color: #ff6600;
+            background: #ff6600;
+        }
+
+        .icon-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        /* 图标图片样式 | Icon image styles */
+        .icon-option img,
+        .icon-option svg {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        /* 图标名称文本 | Icon name text */
+        .icon-option .icon-name {
+            font-size: 11px;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        /* 选中状态的图标名称 | Selected state icon name */
+        .icon-option.selected .icon-name {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        /* 底部信息样式 | Footer info styles */
         .footer {
             text-align: center;
             margin-top: 15px;
@@ -130,67 +280,93 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1 data-i18n="extension_title">📸 Video Screenshot Tool</h1>
-        <p data-i18n="extension_subtitle">Capture stunning moments from web videos</p>
-    </div>
-    
-    <div class="feature-list">
-        <div class="feature-item">
-            <div class="feature-icon">
-                <svg viewBox="0 0 24 24">
-                    <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
-                </svg>
-            </div>
-            <div class="feature-text">
-                <h3 data-i18n="feature1_title">One-Click Screenshot</h3>
-                <p data-i18n="feature1_desc">Click to save the current frame</p>
-            </div>
+<div class="header">
+    <h1 data-i18n="extension_title">📸 Video Screenshot Tool</h1>
+    <p data-i18n="extension_subtitle">Capture stunning moments from web videos</p>
+</div>
+
+
+<div class="feature-list">
+    <div class="feature-item">
+        <div class="feature-icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+            </svg>
         </div>
-        
-        <div class="feature-item">
-            <div class="feature-icon">
-                <svg viewBox="0 0 24 24">
-                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/>
-                </svg>
-            </div>
-            <div class="feature-text">
-                <h3 data-i18n="feature2_title">High Quality</h3>
-                <p data-i18n="feature2_desc">Saves images in original resolution</p>
-            </div>
-        </div>
-        
-        <div class="feature-item">
-            <div class="feature-icon">
-                <svg viewBox="0 0 24 24">
-                    <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12z"/>
-                </svg>
-            </div>
-            <div class="feature-text">
-                <h3 data-i18n="feature3_title">Smart Detection</h3>
-                <p data-i18n="feature3_desc">Automatically detects videos on page</p>
-            </div>
+        <div class="feature-text">
+            <h3 data-i18n="feature1_title">One-Click Screenshot</h3>
+            <p data-i18n="feature1_desc">Click to save the current frame</p>
         </div>
     </div>
-    
-    <div class="usage">
-        <h2 data-i18n="usage_title">How to Use</h2>
-        <ol>
-            <li data-i18n="usage1">Open a page with video: Supports Bilibili, YouTube, Feiniu</li>
-            <li data-i18n="usage2">The Screenshot button appears on the right side of the video</li>
-            <li data-i18n="usage3">Click the button to save the current frame to download folder</li>
-        </ol>
+
+    <div class="feature-item">
+        <div class="feature-icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/>
+            </svg>
+        </div>
+        <div class="feature-text">
+            <h3 data-i18n="feature2_title">High Quality</h3>
+            <p data-i18n="feature2_desc">Saves images in original resolution</p>
+        </div>
     </div>
-    
-    <div class="donate">
-        <p data-i18n="donate_text">如果你喜欢这个插件，欢迎捐赠。</p>
-        <img src="https://pic2.ziyuan.wang/user/Knoll9337/2025/06/%E5%85%AC%E5%AD%90%E6%9C%89%E8%AF%AD_8d1b61529d174.png" alt="Donate">
+
+    <div class="feature-item">
+        <div class="feature-icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12z"/>
+            </svg>
+        </div>
+        <div class="feature-text">
+            <h3 data-i18n="feature3_title">Smart Detection</h3>
+            <p data-i18n="feature3_desc">Automatically detects videos on page</p>
+        </div>
     </div>
-    
-    <div class="footer">
-        <span data-i18n="version">Version 1.0</span> | <span data-i18n="app_name">Video Screenshot Tool</span>
+</div>
+
+<div class="toggle-container">
+    <span class="toggle-label" data-i18n="enable_screenshot">启用截图功能</span>
+    <label class="toggle-switch">
+        <input type="checkbox" id="screenshot-toggle">
+        <span class="slider"></span>
+    </label>
+</div>
+
+<div class="icon-selector">
+    <h2 data-i18n="select_icon_style">选择图标样式</h2>
+    <div class="icon-options">
+        <label class="icon-option" data-icon="screenshot.svg">
+            <input type="radio" name="icon-style" value="screenshot.svg">
+            <img src="assets/screenshot.svg" alt="Icon 1">
+            <span class="icon-name" data-i18n="icon_pattern_1">图案一</span>
+        </label>
+        <label class="icon-option" data-icon="icon-no-bg.svg">
+            <input type="radio" name="icon-style" value="icon-no-bg.svg">
+            <img src="assets/icon-no-bg.svg" alt="Icon 2">
+            <span class="icon-name" data-i18n="icon_pattern_2">图案二</span>
+        </label>
     </div>
-    
-    <script src="popup.js"></script>
+</div>
+
+<div class="usage">
+    <h2 data-i18n="usage_title">How to Use</h2>
+    <ol>
+        <li data-i18n="usage1">Open a page with video: Supports Bilibili, YouTube, Feiniu</li>
+        <li data-i18n="usage2">The Screenshot button appears on the right side of the video</li>
+        <li data-i18n="usage3">Click the button to save the current frame to download folder</li>
+    </ol>
+</div>
+
+<div class="donate">
+    <p data-i18n="donate_text">如果你喜欢这个插件，欢迎捐赠。</p>
+    <img src="https://pic2.ziyuan.wang/user/Knoll9337/2025/06/%E5%85%AC%E5%AD%90%E6%9C%89%E8%AF%AD_8d1b61529d174.png"
+         alt="Donate">
+</div>
+
+<div class="footer">
+    <span data-i18n="version">Version 1.0</span> | <span data-i18n="app_name">Video Screenshot Tool</span>
+</div>
+
+<script src="popup.js"></script>
 </body>
 </html>

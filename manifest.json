@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "default_locale": "en",
   "name": "Clipzo",
-  "version": "1.0",
+  "version": "1.1.0",
   "description": "Clipzo is a browser extension that displays a screenshot button on web video players, helping users quickly capture video frames.",
   "permissions": [
     "activeTab",
@@ -31,6 +31,12 @@
       "js": ["content.js"],
       "css": ["content.css"],
       "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/*"],
+      "matches": ["<all_urls>"]
     }
   ],
   "background": {

@@ -4,9 +4,98 @@
     const STYLE_ID = 'clipzo-styles'; // 样式表ID | Stylesheet ID
     const BUTTON_CLASS = 'clipzo-btn'; // 按钮类名 | Button class name
     const PROCESSED_PLAYERS = new WeakSet(); // 已处理的播放器集合 | Processed players set
+    let screenshotEnabled = true; // 截图功能是否启用 | Whether screenshot feature is enabled
+    let currentIconStyle = 'screenshot.svg'; // 当前图标样式 | Current icon style
+    
     function getMessage(key) {
         return chrome.i18n.getMessage(key) || key;
     }
+
+    // 加载截图功能状态 | Load screenshot feature state
+    function loadScreenshotState() {
+        chrome.storage.sync.get(['screenshotEnabled'], (result) => {
+            screenshotEnabled = result.screenshotEnabled !== false;
+            updateButtonsVisibility();
+        });
+    }
+    
+    // 加载图标样式 | Load icon style
+    function loadIconStyle() {
+        chrome.storage.sync.get(['iconStyle'], (result) => {
+            currentIconStyle = result.iconStyle || 'screenshot.svg';
+            updateAllButtonIcons();
+        });
+    }
+    
+    // 获取图标HTML | Get icon HTML
+    function getIconHTML(iconFile) {
+        const iconPath = chrome.runtime.getURL(`assets/${iconFile}`);
+        
+        return `<img src="${iconPath}" style="width: 20px; height: 20px;" alt="Screenshot">`;
+    }
+    
+    // 更新所有按钮图标 | Update all button icons
+    function updateAllButtonIcons() {
+        const buttons = document.querySelectorAll(`.${BUTTON_CLASS}`);
+        buttons.forEach(btn => {
+            btn.innerHTML = getIconHTML(currentIconStyle);
+        });
+    }
+    
+    // 更新按钮可见性 | Update buttons visibility
+    function updateButtonsVisibility() {
+        const buttons = document.querySelectorAll(`.${BUTTON_CLASS}`);
+        buttons.forEach(btn => {
+            btn.style.display = screenshotEnabled ? 'flex' : 'none'; // 启用时显示，禁用时隐藏
+        });
+    }
+    
+    // 监听鼠标进出视频区域 | Listen for mouse enter/leave video areas
+    function observeMouseEvents() {
+        // 为所有已存在的按钮添加鼠标事件监听器
+        function addButtonEvents() {
+            const buttons = document.querySelectorAll(`.${BUTTON_CLASS}`);
+            buttons.forEach(btn => {
+                // 找到按钮所在的视频容器
+                const container = btn.closest('.video-container, .xgplayer, [class*="xgplayer"], .xg-player, .html5-video-player, #movie_player, video');
+                if (container) {
+                    // 确保容器有鼠标事件监听器
+                    if (!container._hasMouseEvents) {
+                        container._hasMouseEvents = true;
+                        
+                        // 鼠标进入容器时显示按钮
+                        container.addEventListener('mouseenter', () => {
+                            if (screenshotEnabled) {
+                                btn.style.display = 'flex';
+                            }
+                        });
+                        
+                        // 鼠标离开容器时隐藏按钮
+                        container.addEventListener('mouseleave', () => {
+                            btn.style.display = 'none';
+                        });
+                    }
+                }
+            });
+        }
+        
+        // 初始添加事件监听器
+        addButtonEvents();
+        
+        // 定期检查并添加事件监听器，确保动态添加的按钮也能被处理
+        setInterval(addButtonEvents, 2000);
+    }
+    
+    // 监听来自popup的消息 | Listen for messages from popup
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        if (message.action === 'updateScreenshotState') {
+            screenshotEnabled = message.enabled;
+            updateButtonsVisibility();
+        } else if (message.action === 'updateIconStyle') {
+            currentIconStyle = message.iconFile;
+            updateAllButtonIcons();
+        }
+    });
 
     // 注入CSS样式 | Inject CSS styles
     function injectStyles() {
@@ -21,9 +110,9 @@
                 right: 10px;
                 transform: translateY(-50%);
                 z-index: 999999;
-                background: rgba(0, 0, 0, 0.7);
-                border: none;
-                border-radius: 4px;
+                background: rgba(0, 0, 0, 0.75);
+                border: 2px solid rgba(255, 255, 255, 0.3);
+                border-radius: 8px;
                 padding: 8px 12px;
                 color: white;
                 font-size: 14px;
@@ -33,17 +122,24 @@
                 gap: 6px;
                 transition: all 0.2s ease;
                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 
+                            0 0 0 1px rgba(255, 255, 255, 0.1) inset;
             }
             
             .${BUTTON_CLASS}:hover {
-                background: rgba(255, 102, 0, 0.9);
-                transform: translateY(-50%) scale(1.05);
+                background: rgba(255, 102, 0, 0.95);
+                border-color: rgba(255, 255, 255, 0.6);
+                transform: translateY(-50%) scale(1.08);
+                box-shadow: 0 6px 16px rgba(255, 102, 0, 0.5), 
+                            0 0 0 1px rgba(255, 255, 255, 0.2) inset;
             }
             
-            .${BUTTON_CLASS} svg {
-                width: 18px;
-                height: 18px;
-                fill: currentColor;
+            .${BUTTON_CLASS} svg,
+            .${BUTTON_CLASS} img {
+                width: 20px;
+                height: 20px;
             }
             
             .${BUTTON_CLASS}.position-top {
@@ -87,13 +183,8 @@
     function createScreenshotButton() {
         const btn = document.createElement('button');
         btn.className = BUTTON_CLASS;
-        btn.innerHTML = `
-            <svg viewBox="0 0 24 24">
-                <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
-            </svg>
-            <span class="btn-text">${getMessage('button_screenshot')}</span>
-        `;
-
+        btn.innerHTML = getIconHTML(currentIconStyle);
+        btn.style.display = 'flex'; // 默认显示
         return btn;
     }
 
@@ -278,8 +369,8 @@
     function findAndProcessStandardVideos() {
         const videos = document.querySelectorAll('video');
         videos.forEach(video => {
-            // 跳过西瓜播放器和YouTube中的视频，避免重复 | Skip videos in Xigua/YouTube players to avoid duplicates
-            if (video.closest('.xgplayer, [class*="xgplayer"], .xg-player, .html5-video-player')) {
+            // 只跳过西瓜播放器中的视频，不跳过YouTube中的视频 | Skip videos in Xigua players only, not YouTube
+            if (video.closest('.xgplayer, [class*="xgplayer"], .xg-player')) {
                 return;
             }
             // 检查视频是否已加载数据 | Check if video has loaded data
@@ -314,7 +405,8 @@
 
     // 查找并处理YouTube播放器 | Find and process YouTube players
     function findAndProcessYouTubePlayers() {
-        const players = document.querySelectorAll('.html5-video-player');
+        // 查找YouTube播放器的多种可能元素 | Find various possible YouTube player elements
+        const players = document.querySelectorAll('.html5-video-player, #movie_player');
         players.forEach(player => {
             // 跳过已添加按钮的播放器 | Skip players with button already added
             const existingBtn = player.querySelector(`.${BUTTON_CLASS}`);
@@ -379,11 +471,15 @@
     // 初始化函数 | Initialization function
     function init() {
         injectStyles(); // 注入样式 | Inject styles
+        loadScreenshotState(); // 加载截图功能状态 | Load screenshot feature state
+        loadIconStyle(); // 加载图标样式 | Load icon style
 
         // 首次处理现有元素 | Process existing elements first time
         findAndProcessAll();
         // 开始监听新元素 | Start observing new elements
         observeNewElements();
+        // 开始监听鼠标事件 | Start observing mouse events
+        observeMouseEvents();
 
         // 多次重试以确保动态加载的内容被处理 | Retry multiple times to ensure dynamically loaded content is processed
         setTimeout(findAndProcessAll, 1000);

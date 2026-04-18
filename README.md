@@ -65,4 +65,11 @@ screenshot-extension/
 
 ## Version
 
-Current Version: 1.0
+Current Version: 1.1.0
+
+### Changelog
+
+#### Version 1.1.0
+- Improved screenshot button visibility logic, added hide cursor option
+- Button hides when mouse leaves video area, added hide cursor option
+- Changed textButton to imageButton

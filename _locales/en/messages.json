@@ -78,5 +78,29 @@
     "screenshot": {
         "message": "Screenshot",
         "description": "Screenshot"
+    },
+    "enable_screenshot": {
+        "message": "Enable Screenshot",
+        "description": "Enable screenshot feature toggle"
+    },
+    "feature_enabled": {
+        "message": "Feature Enabled",
+        "description": "Feature enabled status"
+    },
+    "feature_disabled": {
+        "message": "Feature Disabled",
+        "description": "Feature disabled status"
+    },
+    "select_icon_style": {
+        "message": "Select Icon Style",
+        "description": "Select icon style title"
+    },
+    "icon_pattern_1": {
+        "message": "Pattern 1",
+        "description": "First icon pattern"
+    },
+    "icon_pattern_2": {
+        "message": "Pattern 2",
+        "description": "Second icon pattern"
     }
 }
