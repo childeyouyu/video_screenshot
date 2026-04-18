@@ -13,8 +13,9 @@
         style.textContent = `
             .${BUTTON_CLASS} {
                 position: absolute;
-                bottom: 10px;
+                top: 50%;
                 right: 10px;
+                transform: translateY(-50%);
                 z-index: 999999;
                 background: rgba(0, 0, 0, 0.7);
                 border: none;
