@@ -4,6 +4,36 @@
     const STYLE_ID = 'video-screenshot-styles';
     const BUTTON_CLASS = 'video-screenshot-btn';
     const PROCESSED_PLAYERS = new WeakSet();
+    
+    const translations = {
+        zh: {
+            screenshot: '截图',
+            saved: '截图已保存到下载文件夹',
+            notReady: '视频未准备好',
+            captureFailed: '无法捕获视频画面'
+        },
+        en: {
+            screenshot: 'Screenshot',
+            saved: 'Screenshot saved to download folder',
+            notReady: 'Video not ready',
+            captureFailed: 'Cannot capture video'
+        }
+    };
+    
+    let currentLang = 'zh';
+    
+    function getMessage(key) {
+        return translations[currentLang][key] || translations.en[key] || key;
+    }
+
+    function updateButtonLanguage() {
+        document.querySelectorAll(`.${BUTTON_CLASS}`).forEach(btn => {
+            const textSpan = btn.querySelector('.btn-text');
+            if (textSpan) {
+                textSpan.textContent = getMessage('screenshot');
+            }
+        });
+    }
 
     function injectStyles() {
         if (document.getElementById(STYLE_ID)) return;
@@ -86,7 +116,7 @@
             <svg viewBox="0 0 24 24">
                 <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
             </svg>
-            截图
+            <span class="btn-text">${getMessage('screenshot')}</span>
         `;
         
         return btn;
@@ -113,7 +143,7 @@
             link.click();
             
             URL.revokeObjectURL(url);
-            showToast('截图已保存到下载文件夹');
+            showToast(getMessage('saved'));
         }, 'image/png');
     }
 
@@ -138,7 +168,7 @@
             link.click();
             
             URL.revokeObjectURL(url);
-            showToast('截图已保存到下载文件夹');
+            showToast(getMessage('saved'));
         }, 'image/png');
     }
 
@@ -251,7 +281,7 @@
                 } else if (canvas) {
                     captureCanvasScreenshot(canvas);
                 } else {
-                    showToast('无法捕获视频画面');
+                    showToast(getMessage('captureFailed'));
                 }
             });
         }
@@ -307,7 +337,7 @@
                 if (videoElement && videoElement.readyState >= 2) {
                     captureVideoScreenshot(videoElement);
                 } else {
-                    showToast('视频未准备好');
+                    showToast(getMessage('notReady'));
                 }
             });
             
@@ -345,6 +375,19 @@
 
     function init() {
         injectStyles();
+        
+        chrome.storage.local.get('language', function(result) {
+            if (result.language) {
+                currentLang = result.language;
+            }
+        });
+        
+        chrome.storage.onChanged.addListener(function(changes, areaName) {
+            if (changes.language && changes.language.newValue) {
+                currentLang = changes.language.newValue;
+                updateButtonLanguage();
+            }
+        });
         
         findAndProcessAll();
         observeNewElements();
