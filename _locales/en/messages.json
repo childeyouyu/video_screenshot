@@ -54,5 +54,9 @@
     "app_name": {
         "message": "Video Screenshot Tool",
         "description": "App name"
+    },
+    "donate_text": {
+        "message": "If you like this extension, please consider donating. Supports WeChat, Alipay, and QQ",
+        "description": "Donate text"
     }
 }

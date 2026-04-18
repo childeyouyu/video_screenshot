@@ -54,5 +54,9 @@
     "app_name": {
         "message": "视频截图工具",
         "description": "应用名称"
+    },
+    "donate_text": {
+        "message": "如果你喜欢这个插件，欢迎捐赠。支持微信、支付宝、QQ支付",
+        "description": "捐赠文字"
     }
 }
