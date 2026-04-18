@@ -33,7 +33,7 @@
             
             .${BUTTON_CLASS}:hover {
                 background: rgba(255, 102, 0, 0.9);
-                transform: scale(1.05);
+                transform: translateY(-50%) scale(1.05);
             }
             
             .${BUTTON_CLASS} svg {
@@ -264,9 +264,17 @@
         const videos = document.querySelectorAll('video');
         videos.forEach(video => {
             if (video.readyState >= 2) {
-                attachButtonToStandardVideo(video);
+                if (!PROCESSED_PLAYERS.has(video)) {
+                    PROCESSED_PLAYERS.add(video);
+                    attachButtonToStandardVideo(video);
+                }
             } else {
-                video.addEventListener('loadeddata', () => attachButtonToStandardVideo(video));
+                video.addEventListener('loadeddata', () => {
+                    if (!PROCESSED_PLAYERS.has(video)) {
+                        PROCESSED_PLAYERS.add(video);
+                        attachButtonToStandardVideo(video);
+                    }
+                });
             }
         });
     }
