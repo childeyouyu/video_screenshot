@@ -3,6 +3,7 @@
 
     const STYLE_ID = 'video-screenshot-styles';
     const BUTTON_CLASS = 'video-screenshot-btn';
+    const PROCESSED_PLAYERS = new WeakSet();
 
     function injectStyles() {
         if (document.getElementById(STYLE_ID)) return;
@@ -77,10 +78,7 @@
         document.head.appendChild(style);
     }
 
-    function createScreenshotButton(videoElement) {
-        const existingBtn = videoElement.parentElement?.querySelector(`.${BUTTON_CLASS}`);
-        if (existingBtn) return existingBtn;
-
+    function createScreenshotButton() {
         const btn = document.createElement('button');
         btn.className = BUTTON_CLASS;
         btn.innerHTML = `
@@ -90,11 +88,6 @@
             截图
         `;
         
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            captureVideoScreenshot(videoElement);
-        });
-
         return btn;
     }
 
@@ -106,6 +99,31 @@
         canvas.height = videoElement.videoHeight;
         
         ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+        
+        canvas.toBlob((blob) => {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const pageTitle = document.title.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_').substring(0, 30);
+            link.download = `截图_${pageTitle}_${timestamp}.png`;
+            
+            link.click();
+            
+            URL.revokeObjectURL(url);
+            showToast('截图已保存到下载文件夹');
+        }, 'image/png');
+    }
+
+    function captureCanvasScreenshot(canvasElement) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = canvasElement.width;
+        canvas.height = canvasElement.height;
+        
+        ctx.drawImage(canvasElement, 0, 0);
         
         canvas.toBlob((blob) => {
             const url = URL.createObjectURL(blob);
@@ -135,13 +153,32 @@
         setTimeout(() => toast.remove(), 2000);
     }
 
-    function attachButtonToVideo(videoElement) {
+    function findVideoElement(container) {
+        const video = container.querySelector('video');
+        if (video && video.readyState >= 2) {
+            return video;
+        }
+        
+        const canvas = container.querySelector('canvas');
+        if (canvas) {
+            return { type: 'canvas', element: canvas };
+        }
+        
+        return null;
+    }
+
+    function attachButtonToStandardVideo(videoElement) {
         let container = videoElement.parentElement;
         
         if (container && container.classList.contains('video-container')) {
             const existingBtn = container.querySelector(`.${BUTTON_CLASS}`);
             if (!existingBtn) {
-                container.appendChild(createScreenshotButton(videoElement));
+                const btn = createScreenshotButton();
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    captureVideoScreenshot(videoElement);
+                });
+                container.appendChild(btn);
             }
             return;
         }
@@ -152,7 +189,12 @@
             
             if (position === 'relative' || position === 'absolute' || position === 'fixed') {
                 container.classList.add('video-container');
-                container.appendChild(createScreenshotButton(videoElement));
+                const btn = createScreenshotButton();
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    captureVideoScreenshot(videoElement);
+                });
+                container.appendChild(btn);
                 return;
             }
             
@@ -166,21 +208,83 @@
         
         videoElement.parentNode.insertBefore(wrapper, videoElement);
         wrapper.appendChild(videoElement);
-        wrapper.appendChild(createScreenshotButton(videoElement));
+        const btn = createScreenshotButton();
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            captureVideoScreenshot(videoElement);
+        });
+        wrapper.appendChild(btn);
     }
 
-    function findAndProcessVideos() {
+    function attachButtonToXgPlayer(playerContainer) {
+        if (PROCESSED_PLAYERS.has(playerContainer)) {
+            return;
+        }
+        PROCESSED_PLAYERS.add(playerContainer);
+        
+        const existingBtn = playerContainer.querySelector(`.${BUTTON_CLASS}`);
+        if (existingBtn) return;
+        
+        const videoElement = playerContainer.querySelector('video');
+        const canvasElement = playerContainer.querySelector('canvas');
+        
+        const btn = createScreenshotButton();
+        
+        if (videoElement && videoElement.readyState >= 2) {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                captureVideoScreenshot(videoElement);
+            });
+        } else if (canvasElement) {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                captureCanvasScreenshot(canvasElement);
+            });
+        } else {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const video = playerContainer.querySelector('video');
+                const canvas = playerContainer.querySelector('canvas');
+                if (video) {
+                    captureVideoScreenshot(video);
+                } else if (canvas) {
+                    captureCanvasScreenshot(canvas);
+                } else {
+                    showToast('无法捕获视频画面');
+                }
+            });
+        }
+        
+        playerContainer.style.position = 'relative';
+        playerContainer.appendChild(btn);
+    }
+
+    function findAndProcessStandardVideos() {
         const videos = document.querySelectorAll('video');
         videos.forEach(video => {
             if (video.readyState >= 2) {
-                attachButtonToVideo(video);
+                attachButtonToStandardVideo(video);
             } else {
-                video.addEventListener('loadeddata', () => attachButtonToVideo(video));
+                video.addEventListener('loadeddata', () => attachButtonToStandardVideo(video));
             }
         });
     }
 
-    function observeNewVideos() {
+    function findAndProcessXgPlayers() {
+        const xgPlayers = document.querySelectorAll('.xgplayer, [class*="xgplayer"], .xg-player');
+        xgPlayers.forEach(player => {
+            if (player.querySelector('video') || player.querySelector('canvas')) {
+                attachButtonToXgPlayer(player);
+            }
+        });
+    }
+
+    function findAndProcessAll() {
+        findAndProcessStandardVideos();
+        findAndProcessXgPlayers();
+    }
+
+    function observeNewElements() {
         const observer = new MutationObserver((mutations) => {
             let shouldCheck = false;
             
@@ -191,7 +295,7 @@
             });
             
             if (shouldCheck) {
-                findAndProcessVideos();
+                setTimeout(findAndProcessAll, 500);
             }
         });
 
@@ -203,8 +307,13 @@
 
     function init() {
         injectStyles();
-        findAndProcessVideos();
-        observeNewVideos();
+        
+        findAndProcessAll();
+        observeNewElements();
+        
+        setTimeout(findAndProcessAll, 1000);
+        setTimeout(findAndProcessAll, 2000);
+        setTimeout(findAndProcessAll, 3000);
     }
 
     if (document.readyState === 'loading') {
