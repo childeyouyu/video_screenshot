@@ -52,11 +52,31 @@
         "description": "版本文字"
     },
     "app_name": {
-        "message": "视频截图工具",
+        "message": "Clipzo",
         "description": "应用名称"
     },
     "donate_text": {
         "message": "如果你喜欢这个插件，欢迎捐赠。支持微信、支付宝、QQ支付",
         "description": "捐赠文字"
+    },
+    "button_screenshot": {
+        "message": "截图",
+        "description": "截图按钮"
+    },
+    "saved": {
+        "message": "截图已保存到下载文件夹",
+        "description": "保存成功文字"
+    },
+    "notReady": {
+        "message": "视频未准备好",
+        "description": "视频未准备好文字"
+    },
+    "captureFailed": {
+        "message": "无法捕获视频画面",
+        "description": "捕获失败文字"
+    },
+    "screenshot": {
+        "message": "截图",
+        "description": "截图"
     }
 }
