@@ -36,7 +36,7 @@ Video Screenshot Tool is a Chrome browser extension that displays a screenshot b
 
 ### Language Switch
 
-Click "中文" or "English" button in the popup to switch language. The language setting will be saved automatically.
+检测浏览器语言，自动切换语言。
 
 ### Development
 
